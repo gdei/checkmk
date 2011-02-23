@@ -1,0 +1,55 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+cisco_asa_cpu = [80, 90]
+cisco_asa_mem = [80, 90]
+
+def inventory_cisco_asa_cpu(checkname, info):
+    return [(None, "", None)]
+
+def check_cisco_asa_cpu(item, params, info):
+    # CPU Total 1 min
+    usage_1 = int(info[0][1])
+
+    # CPU Total 5 min
+    usage_5 = int(info[0][2])
+
+    if usage_1 >= cisco_asa_cpu[1]:   # Critical
+        return(2, "CRITICAL: CPU [1min avg: %s, 5min avg: %s]" % (usage_1, usage_5))
+
+    elif usage_1 >= cisco_asa_cpu[0]: # Warning
+        return(1, "WARNING: CPU [1min avg: %s, 5min avg: %s]" % (usage_1, usage_5))
+
+    else:                             # Ok
+        return(0, "OK: CPU [1min avg: %s, 5min avg: %s]" % (usage_1, usage_5))
+
+
+
+def inventory_cisco_asa_mem(checkname, info):
+    return [(None, "", None)]
+
+def check_cisco_asa_mem(item, params, info):
+
+    mem_used = int(info[0][0])
+    mem_free = int(info[0][1])
+    total    = mem_used + mem_free
+    utilized = total / mem_used
+
+    if utilized >= cisco_asa_mem[1]:   # Critical
+        return(2, "CRITICAL: system memory [util: %.2f, free: %.2f, total: %.2f]" % (utilized, mem_free, total))
+    
+    elif utilized >= cisco_asa_mem[0]: # Warning
+        return(1, "WARNING: Memory [util: %.2f, free: %.2f, total: %.2f]" % (utilized, mem_free, total))
+
+    else:                              # Ok
+        return(0, "OK: Memory [util: %.2f, free: %.2f, total: %.2f]" % (utilized, mem_free, total))
+
+
+snmp_info["cisco_asa_cpu"] = (".1.3.6.1.4.1.9.9.109.1.1.1.1", ["2", "4", "5"])
+snmp_info["cisco_asa_mem"] = (".1.3.6.1.4.1.9.9.48.1.1.1", ["5.1", "6.1"])
+
+check_info["cisco_asa_cpu"] = ( check_cisco_asa_cpu, "cpu", 0, inventory_cisco_asa_cpu )
+check_info["cisco_asa_mem"] = ( check_cisco_asa_mem, "memory",   0, inventory_cisco_asa_mem )
+
+snmp_scan_functions["cisco_asa_cpu"] = lambda oid: "adaptive security applicance" in oid(".1.3.6.1.2.1.1.1.0").lower()
+snmp_scan_functions["cisco_asa_mem"] = lambda oid: "adaptive security applicance" in oid(".1.3.6.1.2.1.1.1.0").lower()
