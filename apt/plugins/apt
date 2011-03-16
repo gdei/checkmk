@@ -76,11 +76,21 @@ def get_upgradeable():
     cache = AptCache()
 
     for pkg in cache:
+        # the comments show the way on how we could implement this with the
+        # new APT API. Since its only supported on the most current Debian
+        # platforms, we still use the older one and supress the warnings
+        # at the beginning of the script.
+        #
         #if pkg.is_upgradable:
         if pkg.isUpgradable:
             name      = pkg.name
             candidate = pkg.candidateOrigin[0]
+
+            # Debian security archive
             if candidate.label == "Debian-Security":
+                pkgs_to_sec_upgrade.append(name)
+            # Ubuntu security archive
+            elif candidate.archive.find("security") > -1:
                 pkgs_to_sec_upgrade.append(name)
             else:
                 pkgs_to_upgrade.append(name)
