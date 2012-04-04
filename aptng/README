@@ -1,0 +1,42 @@
+APT-NG - Check_MK Plugin to check for upgradeable Debian packages.
+
+    Check upgradeable packages, and the age of the apt-cache. The agent plugin
+    will return a list with upgradable package/reposititory source which are
+    available for upgrade.
+
+    ------- IMPORTANT NOTE -------
+
+    This version of the check doesn't depend on python-apt anymore and won't
+    update the package cache, in case it finds cron-apt installed on a system.
+
+    Example Agent Output:
+
+        <<<apt>>>
+        2882
+        6.0.3
+        x11-common Debian-Security:6.0/stable
+
+    You are able to confugure per repository severities.
+
+        # 1 = WARNING
+        # 2 = CRITICAL 
+        apt_repository_severity = {
+         'Debian-Security' : 2,
+         'debian-volatile' : 1,
+         'Unofficial'      : 1,
+         '__default__'     : 1,
+        }
+
+    Eg.: in case we find a package from Debian-Security, the check will return CRITICAL.
+
+    The script was tested on the following Debian versions: Etch, Lenny, Squeeze
+    
+// INSTALLATION INSTRUCTIONS
+
+    On your Check_MK clients:
+    
+        Copy plugins/apt to your clients into /usr/lib/check_mk_agent/plugins/apt
+    
+    On your Nagios Server:
+    
+        Copy checks/apt on your server into /usr/local/share/check_mk/scripts/apt
