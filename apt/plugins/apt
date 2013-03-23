@@ -84,7 +84,7 @@ def get_upgradeable():
         if pkg.is_upgradable:
         #if pkg.isUpgradable:
             name      = pkg.name
-            candidate = pkg.candidates.origin[0]
+            candidate = pkg.candidate.origins[0]
             #candidate = pkg.candidateOrigin[0]
 
             # Debian security archive
