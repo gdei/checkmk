@@ -81,10 +81,11 @@ def get_upgradeable():
         # platforms, we still use the older one and supress the warnings
         # at the beginning of the script.
         #
-        #if pkg.is_upgradable:
-        if pkg.isUpgradable:
+        if pkg.is_upgradable:
+        #if pkg.isUpgradable:
             name      = pkg.name
-            candidate = pkg.candidateOrigin[0]
+            candidate = pkg.candidates.origin[0]
+            #candidate = pkg.candidateOrigin[0]
 
             # Debian security archive
             if candidate.label == "Debian-Security":
