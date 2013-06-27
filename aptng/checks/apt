@@ -80,7 +80,7 @@ def check_apt(item, params, info):
 
     # Determine apt cache age
     if mod_time > apt_cache_max_age:
-        level = 0
+        level = 1
         msg   = "Package cache is out of date, %s seconds since last update." % mod_time
 
     return (level, "%s" % msg)
