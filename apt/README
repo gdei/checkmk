@@ -1,3 +1,11 @@
+
+
+-------------------------------------------------------------------------------------------------
+This version of the APT plugin is outdated. Please consider upgrading to the newer check (APTNG)!
+-------------------------------------------------------------------------------------------------
+
+
+
 Check_MK Plugin to check for upgradeable Debian packages.
 
     The client plugin will return a list of packages available for upgrade. It
