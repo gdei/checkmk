@@ -55,8 +55,12 @@ def check_yum(item, params, info):
         for package in packages:
             name   = package[0]
             # agent format: Debian-Security:6.0/stable
-            source = package[2]
-
+            # yum doesnt seem to always return a package 'source'
+            if len(package) == 2:
+                source = package[2]
+            else:
+                source = ""
+            
             # Determine the severity of the situation :-)
             if source in yum_repository_severity:
                 level  = max(level, yum_repository_severity[source])
