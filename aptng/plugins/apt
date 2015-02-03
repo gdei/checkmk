@@ -1,6 +1,13 @@
 #!/bin/bash
 
 if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
+    if [[ -e /etc/lsb-release ]] ; then
+        dist=`grep DISTRIB_ID /etc/lsb-release | awk -F = '{print $2}'`
+        release=`grep DISTRIB_CODENAME /etc/lsb-release | awk -F = '{print $2}'`
+    else
+        dist="Debian"
+        release=`cat /etc/debian_version`
+    fi
     cache_time_ref=/var/cache/apt/pkgcache.bin
     delta=0
 
@@ -22,6 +29,7 @@ if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
 
     echo "<<<apt>>>"
     echo $delta
-    cat /etc/debian_version
+    echo $dist
+    echo $release
     waitmax 25 /usr/bin/apt-get -o Debug::NoLocking=yes -s dist-upgrade -y | awk '/^Inst/ { print $2 " " $5}' || echo "timeout_apt_get Debian-Security:X.X/DUMMY)"
 fi

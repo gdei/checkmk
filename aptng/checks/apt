@@ -52,16 +52,28 @@ def check_apt(item, params, info):
 
     # Parse the agent output
     mod_time     = int(info[0][0])
-    deb_release  = info[1][0]
+    distribution = info[1][0]
+    dist_release  = info[2][0]
+
+    # Modify Repository Severity for Ubuntu Dist
+    if distribution == "Ubuntu":
+        ub_update = dist_release + "-updates"
+        apt_repository_severity[ub_update] = 2
 
     # If there are upgrades available parse them.
-    if len(info) > 2:
-        packages  = info[2:]
+    if len(info) > 3:
+        packages  = info[3:]
 
         for package in packages:
             name   = package[0]
+            # extract Ubuntu source info
+            # agent format: Ubuntu:12.04/precise-updates
+            if distribution == "Ubuntu":
+                source = package[1].split('/')[1]
+            # extract Debian source info
             # agent format: Debian-Security:6.0/stable
-            source = package[1].split(' ')[0].split(':')[0]
+            else:
+                source = package[1].split(' ')[0].split(':')[0]
 
             # Determine the severity of the situation :-)
             if source in apt_repository_severity:
