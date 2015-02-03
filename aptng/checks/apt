@@ -90,6 +90,10 @@ def check_apt(item, params, info):
     for source in apt_upgrades:
         msg += "%s/%s [%s] " % (source, len(apt_upgrades[source]), ",".join(apt_upgrades[source]))
 
+    # Inform user if there are no pending updates
+    if msg == "":
+        msg += "No pending updates found"
+
     # Determine apt cache age
     if mod_time > apt_cache_max_age:
         level = 1
