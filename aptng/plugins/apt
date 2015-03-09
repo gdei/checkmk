@@ -35,7 +35,7 @@ if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
     # In Ubuntu's apt-get the number of output fields varies, so we need awk to search for repo information...
         waitmax 25 /usr/bin/apt-get -o Debug::NoLocking=yes -s dist-upgrade -y |\
 		awk -v dist="$dist" '/^Inst/{\
-			match($0,dist":[a-z,A-Z,0-9./-]*");\
+			match($0,dist":[./-\w]*");\
 			distinfo = substr($0,RSTART,RLENGTH);\
 			print $2 " " distinfo;\
 		 }' || echo "timeout_apt_get)"
