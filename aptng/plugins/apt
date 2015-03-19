@@ -11,6 +11,13 @@ if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
     cache_time_ref=/var/cache/apt/pkgcache.bin
     delta=0
 
+    if [[ -e /var/run/reboot-required ]]
+    then
+        reboot="reboot-required"
+    else
+        reboot="no-reboot-required"
+    fi
+
     # Only try to manually update the cache, if cron-apt is not installed.
     if [[ `dpkg-query -W -f='${Status}\n' cron-apt` != "install ok installed" ]] &>/dev/null ; then
         cache_time_ref=/var/cache/apt/pkgcache.bin
@@ -31,11 +38,12 @@ if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
     echo $delta
     echo $dist
     echo $release
+    echo $reboot
     if [[ $dist == "Ubuntu" ]] ; then
     # In Ubuntu's apt-get the number of output fields varies, so we need awk to search for repo information...
         waitmax 25 /usr/bin/apt-get -o Debug::NoLocking=yes -s dist-upgrade -y |\
 		awk -v dist="$dist" '/^Inst/{\
-			match($0,dist":[./-\w]*");\
+			match($0,dist":[a-zA-Z0-9-/.]*");\
 			distinfo = substr($0,RSTART,RLENGTH);\
 			print $2 " " distinfo;\
 		 }' || echo "timeout_apt_get)"

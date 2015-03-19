@@ -53,7 +53,13 @@ def check_apt(item, params, info):
     # Parse the agent output
     mod_time     = int(info[0][0])
     distribution = info[1][0]
-    dist_release  = info[2][0]
+    dist_release = info[2][0]
+    reboot       = info[3][0]
+
+    # Set status to WARNING if reboot is pending from recent updates
+    if reboot == "reboot-required":
+        level    = 1
+        msg      += "Reboot required! "
 
     # Modify Repository Severity for Ubuntu Dist
     if distribution == "Ubuntu":
@@ -61,8 +67,8 @@ def check_apt(item, params, info):
         apt_repository_severity[ub_security] = 2
 
     # If there are upgrades available parse them.
-    if len(info) > 3:
-        packages  = info[3:]
+    if len(info) > 4:
+        packages  = info[4:]
 
         for package in packages:
             name   = package[0]
