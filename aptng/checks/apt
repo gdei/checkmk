@@ -75,7 +75,12 @@ def check_apt(item, params, info):
             # extract Ubuntu source info
             # agent format: Ubuntu:12.04/precise-security
             if distribution == "Ubuntu":
-                source = package[1].split('/')[1]
+                try:
+                    source = package[1].split('/')[1]
+                # Exception for third party repositories with different format
+                except:
+                    source = package[1].split(' ')[0].split(':')[0]
+
             # extract Debian source info
             # agent format: Debian-Security:6.0/stable
             else:
