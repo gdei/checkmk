@@ -54,12 +54,12 @@ def check_apt(item, params, info):
     mod_time     = int(info[0][0])
     distribution = info[1][0]
     dist_release = info[2][0]
-    reboot       = info[3][0]
+    reboot       = ' '.join(info[3])
 
     # Set status to WARNING if reboot is pending from recent updates
-    if reboot == "reboot-required":
+    if reboot.startswith("Reboot required:"):
         level    = 1
-        msg      += "Reboot required! "
+        msg      += reboot
 
     # Modify Repository Severity for Ubuntu Dist
     if distribution == "Ubuntu":

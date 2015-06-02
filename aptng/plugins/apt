@@ -13,9 +13,9 @@ if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
 
     if [[ -e /var/run/reboot-required ]]
     then
-        reboot="reboot-required"
+        reboot="Reboot required: `cat /var/run/reboot-required.pkgs`"
     else
-        reboot="no-reboot-required"
+        reboot="No reboot required"
     fi
 
     # Only try to manually update the cache, if cron-apt is not installed.
@@ -42,8 +42,8 @@ if [[ -e /etc/debian_version && `which apt-get` ]] &>/dev/null ; then
     if [[ $dist == "Ubuntu" ]] ; then
     # In Ubuntu's apt-get the number of output fields varies, so we need awk to search for repo information...
         waitmax 25 /usr/bin/apt-get -o Debug::NoLocking=yes -s dist-upgrade -y |\
-		awk -v dist="$dist" '/^Inst/{\
-			match($0,dist":[a-zA-Z0-9-/.]*");\
+		awk '/^Inst/{\
+			match($0,"[^[:space:]]*:[^[:space:]]*");\
 			distinfo = substr($0,RSTART,RLENGTH);\
 			print $2 " " distinfo;\
 		 }' || echo "timeout_apt_get)"
